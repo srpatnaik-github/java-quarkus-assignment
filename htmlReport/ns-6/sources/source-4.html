@@ -1,0 +1,207 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > WarehouseSearchQuery</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.fulfilment.application.monolith.warehouses.domain.models</a>
+</div>
+
+<h1>Coverage Summary for Class: WarehouseSearchQuery (com.fulfilment.application.monolith.warehouses.domain.models)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WarehouseSearchQuery</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (16/16)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">WarehouseSearchQuery$Builder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (18/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (29/29)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.fulfilment.application.monolith.warehouses.domain.models;
+&nbsp;
+&nbsp;public class WarehouseSearchQuery {
+&nbsp;
+&nbsp;    public static final int MAX_PAGE_SIZE = 100;
+&nbsp;    public static final int DEFAULT_PAGE_SIZE = 10;
+&nbsp;    public static final String DEFAULT_SORT_BY = &quot;createdAt&quot;;
+&nbsp;    public static final String DEFAULT_SORT_ORDER = &quot;asc&quot;;
+&nbsp;
+&nbsp;    private final String location;
+&nbsp;    private final Integer minCapacity;
+&nbsp;    private final Integer maxCapacity;
+&nbsp;    private final String sortBy;
+&nbsp;    private final String sortOrder;
+&nbsp;    private final int page;
+&nbsp;    private final int pageSize;
+&nbsp;
+<b class="fc">&nbsp;    private WarehouseSearchQuery(Builder builder) {</b>
+<b class="fc">&nbsp;        this.location    = builder.location;</b>
+<b class="fc">&nbsp;        this.minCapacity = builder.minCapacity;</b>
+<b class="fc">&nbsp;        this.maxCapacity = builder.maxCapacity;</b>
+<b class="fc">&nbsp;        this.sortBy      = builder.sortBy;</b>
+<b class="fc">&nbsp;        this.sortOrder   = builder.sortOrder;</b>
+<b class="fc">&nbsp;        this.page        = builder.page;</b>
+<b class="fc">&nbsp;        this.pageSize    = builder.pageSize;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public String getLocation()       { return location; }</b>
+<b class="fc">&nbsp;    public Integer getMinCapacity()   { return minCapacity; }</b>
+<b class="fc">&nbsp;    public Integer getMaxCapacity()   { return maxCapacity; }</b>
+<b class="fc">&nbsp;    public String getSortBy()         { return sortBy; }</b>
+<b class="fc">&nbsp;    public String getSortOrder()      { return sortOrder; }</b>
+<b class="fc">&nbsp;    public int getPage()              { return page; }</b>
+<b class="fc">&nbsp;    public int getPageSize()          { return pageSize; }</b>
+&nbsp;
+<b class="fc">&nbsp;    public static Builder builder() { return new Builder(); }</b>
+&nbsp;
+<b class="fc">&nbsp;    public static class Builder {</b>
+&nbsp;        private String location;
+&nbsp;        private Integer minCapacity;
+&nbsp;        private Integer maxCapacity;
+<b class="fc">&nbsp;        private String sortBy    = DEFAULT_SORT_BY;</b>
+<b class="fc">&nbsp;        private String sortOrder = DEFAULT_SORT_ORDER;</b>
+<b class="fc">&nbsp;        private int page         = 0;</b>
+<b class="fc">&nbsp;        private int pageSize     = DEFAULT_PAGE_SIZE;</b>
+&nbsp;
+<b class="fc">&nbsp;        public Builder location(String location)          { this.location = location; return this; }</b>
+<b class="fc">&nbsp;        public Builder minCapacity(Integer minCapacity)   { this.minCapacity = minCapacity; return this; }</b>
+<b class="fc">&nbsp;        public Builder maxCapacity(Integer maxCapacity)   { this.maxCapacity = maxCapacity; return this; }</b>
+<b class="pc">&nbsp;        public Builder sortBy(String sortBy)              { this.sortBy = sortBy != null ? sortBy : DEFAULT_SORT_BY; return this; }</b>
+<b class="pc">&nbsp;        public Builder sortOrder(String sortOrder)        { this.sortOrder = sortOrder != null ? sortOrder : DEFAULT_SORT_ORDER; return this; }</b>
+<b class="pc">&nbsp;        public Builder page(Integer page)                 { this.page = page != null ? page : 0; return this; }</b>
+<b class="pc">&nbsp;        public Builder pageSize(Integer pageSize)         { this.pageSize = pageSize != null ? Math.min(pageSize, MAX_PAGE_SIZE) : DEFAULT_PAGE_SIZE; return this; }</b>
+&nbsp;
+<b class="fc">&nbsp;        public WarehouseSearchQuery build() { return new WarehouseSearchQuery(this); }</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-13 13:25</div>
+</div>
+</body>
+</html>

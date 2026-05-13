@@ -1,0 +1,225 @@
+openapi: 3.0.0
+info:
+  title: Warehouse API
+  description: API for managing products in a warehouse
+  version: 1.0.0
+
+paths:
+  /warehouse:
+    get:
+      summary: List all warehouses units
+      responses:
+        '200':
+          description: A list of warehouse units
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Warehouse'
+    post:
+      summary: Create a new warehouse unit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Warehouse'
+      responses:
+        '201':
+          description: Warehouse unit created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
+        '400':
+          description: Invalid request parameters
+
+  /warehouse/search:
+    get:
+      summary: Search and filter warehouses
+      description: |
+        Returns a paginated list of active (non-archived) warehouses.
+        All parameters are optional and filters are combined with AND logic.
+      operationId: searchWarehouses
+      parameters:
+        - name: location
+          in: query
+          required: false
+          description: Exact match on location identifier (e.g. AMSTERDAM-001)
+          schema:
+            type: string
+            example: "AMSTERDAM-001"
+        - name: minCapacity
+          in: query
+          required: false
+          description: Filter warehouses with capacity greater than or equal to this value
+          schema:
+            type: integer
+            minimum: 0
+            example: 50
+        - name: maxCapacity
+          in: query
+          required: false
+          description: Filter warehouses with capacity less than or equal to this value
+          schema:
+            type: integer
+            minimum: 0
+            example: 200
+        - name: sortBy
+          in: query
+          required: false
+          description: Field to sort results by
+          schema:
+            type: string
+            enum: [createdAt, capacity]
+            default: createdAt
+            example: "capacity"
+        - name: sortOrder
+          in: query
+          required: false
+          description: Sort direction
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+            example: "desc"
+        - name: page
+          in: query
+          required: false
+          description: Zero-indexed page number
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+            example: 0
+        - name: pageSize
+          in: query
+          required: false
+          description: Number of results per page (max 100)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+            example: 10
+      responses:
+        '200':
+          description: Paginated list of matching warehouses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WarehouseSearchResult'
+        '400':
+          description: Invalid query parameters
+
+  /warehouse/{id}:
+    get:
+      summary: Get a warehouse unit by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the warehouse unit to get
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Warehouse unit found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
+        '404':
+          description: Warehouse unit not found
+    delete:
+      summary: Archive a warehouse unit by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the warehouse unit to archive
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Warehouse unit archived
+        '404':
+          description: Warehouse unit not found
+
+  /warehouse/{businessUnitCode}/replacement:
+    post:
+      summary: Replace the current active Warehouse
+      description: |
+        Replaces the current active Warehouse identified by `businessUnitCode` unit by a new Warehouse provided in the request body.
+        A Warehouse can be replaced by another Warehouse with the same Business Unit Code.
+        That means that the previous Warehouse will be archived and the new Warehouse will be created assuming its place.
+      parameters:
+        - name: businessUnitCode
+          in: path
+          required: true
+          description: Business unit code of the warehouse unit to replace
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Warehouse'
+      responses:
+        '200':
+          description: Warehouse unit replaced
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
+        '404':
+          description: Warehouse unit not found
+        '400':
+          description: Invalid request parameters
+
+components:
+  schemas:
+    Warehouse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "456"
+        businessUnitCode:
+          type: string
+          example: "MWH.001"
+        location:
+          type: string
+          example: "AMSTERDAM-001"
+        capacity:
+          type: integer
+          example: 100
+        stock:
+          type: integer
+          example: 50
+
+    WarehouseSearchResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warehouse'
+        page:
+          type: integer
+          description: Current page number (0-indexed)
+          example: 0
+        pageSize:
+          type: integer
+          description: Number of results per page
+          example: 10
+        totalElements:
+          type: long
+          description: Total number of matching warehouses across all pages
+          example: 25
+        totalPages:
+          type: integer
+          description: Total number of pages
+          example: 3

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw test -Dtest=ArchiveWarehouseUseCaseTest,ReplaceWarehouseUseCaseTest)",
+      "Bash(git commit -S -m \"$\\(cat <<''EOF''\ndocs: Verify CODE_ASSIGNMENT.md accuracy and completeness\n\nConducted comprehensive cross-verification of CODE_ASSIGNMENT.md against \nactual codebase implementation. Verified all file references, business rules, \ntest descriptions, and code examples are accurate.\n\nKey verifications:\n- All 10 file references exist and match descriptions\n- 9 business rules correctly implemented in code\n- Test method names and counts verified \\(4 archive + 7 replace tests\\)\n- Buggy and correct code examples accurate\n- Reference material files exist \\(WarehouseOptimisticLockingTest, etc.\\)\n- Location data matches exactly \\(8 locations\\)\n- Maven commands validated\n\nAdded FINAL_REVIEW.md documenting verification results.\n\nAssignment is production-ready for candidates.\nEOF\n\\)\")"
+    ]
+  }
+}

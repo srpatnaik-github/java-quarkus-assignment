@@ -1,0 +1,271 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > WarehouseResourceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.fulfilment.application.monolith.warehouses.adapters.restapi</a>
+</div>
+
+<h1>Coverage Summary for Class: WarehouseResourceImpl (com.fulfilment.application.monolith.warehouses.adapters.restapi)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WarehouseResourceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.9%
+  </span>
+  <span class="absValue">
+    (23/36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    58.3%
+  </span>
+  <span class="absValue">
+    (35/60)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.fulfilment.application.monolith.warehouses.adapters.restapi;
+&nbsp;
+&nbsp;import com.fulfilment.application.monolith.warehouses.adapters.database.WarehouseRepository;
+&nbsp;import com.fulfilment.application.monolith.warehouses.domain.models.WarehouseSearchPage;
+&nbsp;import com.fulfilment.application.monolith.warehouses.domain.models.WarehouseSearchQuery;
+&nbsp;import com.fulfilment.application.monolith.warehouses.domain.ports.ArchiveWarehouseOperation;
+&nbsp;import com.fulfilment.application.monolith.warehouses.domain.ports.CreateWarehouseOperation;
+&nbsp;import com.fulfilment.application.monolith.warehouses.domain.ports.ReplaceWarehouseOperation;
+&nbsp;import com.warehouse.api.WarehouseResource;
+&nbsp;import com.warehouse.api.beans.Warehouse;
+&nbsp;import com.warehouse.api.beans.WarehouseSearchResult;
+&nbsp;import jakarta.enterprise.context.RequestScoped;
+&nbsp;import jakarta.inject.Inject;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.ws.rs.WebApplicationException;
+&nbsp;import java.math.BigInteger;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RequestScoped
+<b class="fc">&nbsp;public class WarehouseResourceImpl implements WarehouseResource {</b>
+&nbsp;
+&nbsp;  @Inject private WarehouseRepository warehouseRepository;
+&nbsp;  @Inject private CreateWarehouseOperation createWarehouseOperation;
+&nbsp;  @Inject private ArchiveWarehouseOperation archiveWarehouseOperation;
+&nbsp;  @Inject private ReplaceWarehouseOperation replaceWarehouseOperation;
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public List&lt;Warehouse&gt; listAllWarehousesUnits() {
+<b class="nc">&nbsp;    return warehouseRepository.getAll().stream().map(this::toWarehouseResponse).toList();</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  @Transactional
+&nbsp;  public Warehouse createANewWarehouseUnit(@NotNull Warehouse data) {
+<b class="nc">&nbsp;    var domainWarehouse = new com.fulfilment.application.monolith.warehouses.domain.models.Warehouse();</b>
+<b class="nc">&nbsp;    domainWarehouse.businessUnitCode = data.getBusinessUnitCode();</b>
+<b class="nc">&nbsp;    domainWarehouse.location = data.getLocation();</b>
+<b class="nc">&nbsp;    domainWarehouse.capacity = data.getCapacity();</b>
+<b class="nc">&nbsp;    domainWarehouse.stock = data.getStock() != null ? data.getStock() : 0;</b>
+&nbsp;
+&nbsp;    try {
+<b class="nc">&nbsp;      createWarehouseOperation.create(domainWarehouse);</b>
+<b class="nc">&nbsp;      return toWarehouseResponse(domainWarehouse);</b>
+&nbsp;    } catch (IllegalArgumentException e) {
+<b class="nc">&nbsp;      throw new WebApplicationException(e.getMessage(), 400);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public Warehouse getAWarehouseUnitByID(String id) {
+<b class="nc">&nbsp;    var domainWarehouse = warehouseRepository.findByBusinessUnitCode(id);</b>
+&nbsp;
+<b class="nc">&nbsp;    if (domainWarehouse == null) {</b>
+<b class="nc">&nbsp;      throw new WebApplicationException(</b>
+&nbsp;              &quot;Warehouse with business unit code &#39;&quot; + id + &quot;&#39; not found&quot;, 404);
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    return toWarehouseResponse(domainWarehouse);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  @Transactional
+&nbsp;  public void archiveAWarehouseUnitByID(String id) {
+<b class="fc">&nbsp;    var domainWarehouse = warehouseRepository.findByBusinessUnitCode(id);</b>
+&nbsp;
+<b class="pc">&nbsp;    if (domainWarehouse == null) {</b>
+<b class="nc">&nbsp;      throw new WebApplicationException(</b>
+&nbsp;              &quot;Warehouse with business unit code &#39;&quot; + id + &quot;&#39; not found&quot;, 404);
+&nbsp;    }
+&nbsp;
+&nbsp;    try {
+<b class="fc">&nbsp;      archiveWarehouseOperation.archive(domainWarehouse);</b>
+&nbsp;    } catch (IllegalArgumentException e) {
+<b class="nc">&nbsp;      throw new WebApplicationException(e.getMessage(), 400);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  @Transactional
+&nbsp;  public Warehouse replaceTheCurrentActiveWarehouse(
+&nbsp;          String businessUnitCode, @NotNull Warehouse data) {
+<b class="nc">&nbsp;    var domainWarehouse = new com.fulfilment.application.monolith.warehouses.domain.models.Warehouse();</b>
+<b class="nc">&nbsp;    domainWarehouse.businessUnitCode = businessUnitCode;</b>
+<b class="nc">&nbsp;    domainWarehouse.location = data.getLocation();</b>
+<b class="nc">&nbsp;    domainWarehouse.capacity = data.getCapacity();</b>
+<b class="nc">&nbsp;    domainWarehouse.stock = data.getStock() != null ? data.getStock() : 0;</b>
+&nbsp;
+&nbsp;    try {
+<b class="nc">&nbsp;      replaceWarehouseOperation.replace(domainWarehouse);</b>
+<b class="nc">&nbsp;      var updated = warehouseRepository.findByBusinessUnitCode(businessUnitCode);</b>
+<b class="nc">&nbsp;      return toWarehouseResponse(updated);</b>
+&nbsp;    } catch (IllegalArgumentException e) {
+<b class="nc">&nbsp;      int status = e.getMessage().contains(&quot;does not exist&quot;) ? 404 : 400;</b>
+<b class="nc">&nbsp;      throw new WebApplicationException(e.getMessage(), status);</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public WarehouseSearchResult searchWarehouses(
+&nbsp;          String location,
+&nbsp;          BigInteger minCapacity,
+&nbsp;          BigInteger maxCapacity,
+&nbsp;          String sortBy,
+&nbsp;          String sortOrder,
+&nbsp;          BigInteger page,
+&nbsp;          BigInteger pageSize) {
+&nbsp;
+<b class="pc">&nbsp;    if (sortBy != null &amp;&amp; !sortBy.equals(&quot;createdAt&quot;) &amp;&amp; !sortBy.equals(&quot;capacity&quot;)) {</b>
+<b class="fc">&nbsp;      throw new WebApplicationException(&quot;sortBy must be &#39;createdAt&#39; or &#39;capacity&#39;&quot;, 400);</b>
+&nbsp;    }
+&nbsp;
+<b class="pc">&nbsp;    if (sortOrder != null</b>
+<b class="fc">&nbsp;            &amp;&amp; !sortOrder.equalsIgnoreCase(&quot;asc&quot;)</b>
+<b class="fc">&nbsp;            &amp;&amp; !sortOrder.equalsIgnoreCase(&quot;desc&quot;)) {</b>
+<b class="fc">&nbsp;      throw new WebApplicationException(&quot;sortOrder must be &#39;asc&#39; or &#39;desc&#39;&quot;, 400);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    if (minCapacity != null &amp;&amp; maxCapacity != null &amp;&amp; minCapacity.compareTo(maxCapacity) &gt; 0) {</b>
+<b class="fc">&nbsp;      throw new WebApplicationException(&quot;minCapacity cannot be greater than maxCapacity&quot;, 400);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    WarehouseSearchQuery query = WarehouseSearchQuery.builder()</b>
+<b class="fc">&nbsp;            .location(location)</b>
+<b class="fc">&nbsp;            .minCapacity(minCapacity != null ? minCapacity.intValue() : null)</b>
+<b class="fc">&nbsp;            .maxCapacity(maxCapacity != null ? maxCapacity.intValue() : null)</b>
+<b class="fc">&nbsp;            .sortBy(sortBy)</b>
+<b class="fc">&nbsp;            .sortOrder(sortOrder)</b>
+<b class="pc">&nbsp;            .page(page != null ? page.intValue() : null)</b>
+<b class="pc">&nbsp;            .pageSize(pageSize != null ? pageSize.intValue() : null)</b>
+<b class="fc">&nbsp;            .build();</b>
+&nbsp;
+&nbsp;    WarehouseSearchPage&lt;com.fulfilment.application.monolith.warehouses.domain.models.Warehouse&gt;
+<b class="fc">&nbsp;            domainResult = warehouseRepository.search(query);</b>
+&nbsp;
+<b class="fc">&nbsp;    WarehouseSearchResult response = new WarehouseSearchResult();</b>
+<b class="fc">&nbsp;    response.setData(domainResult.getData().stream().map(this::toWarehouseResponse).toList());</b>
+<b class="fc">&nbsp;    response.setPage(domainResult.getPage());</b>
+<b class="fc">&nbsp;    response.setPageSize(domainResult.getPageSize());</b>
+<b class="fc">&nbsp;    response.setTotalElements(BigInteger.valueOf(domainResult.getTotalElements()));</b>
+<b class="fc">&nbsp;    response.setTotalPages(domainResult.getTotalPages());</b>
+&nbsp;
+<b class="fc">&nbsp;    return response;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  private Warehouse toWarehouseResponse(
+&nbsp;          com.fulfilment.application.monolith.warehouses.domain.models.Warehouse warehouse) {
+<b class="fc">&nbsp;    var response = new Warehouse();</b>
+<b class="fc">&nbsp;    response.setBusinessUnitCode(warehouse.businessUnitCode);</b>
+<b class="fc">&nbsp;    response.setLocation(warehouse.location);</b>
+<b class="fc">&nbsp;    response.setCapacity(warehouse.capacity);</b>
+<b class="fc">&nbsp;    response.setStock(warehouse.stock);</b>
+<b class="fc">&nbsp;    return response;</b>
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-13 13:25</div>
+</div>
+</body>
+</html>

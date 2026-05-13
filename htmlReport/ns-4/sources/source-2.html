@@ -1,0 +1,251 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > WarehouseRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.fulfilment.application.monolith.warehouses.adapters.database</a>
+</div>
+
+<h1>Coverage Summary for Class: WarehouseRepository (com.fulfilment.application.monolith.warehouses.adapters.database)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WarehouseRepository</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (6/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (10/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95.5%
+  </span>
+  <span class="absValue">
+    (42/44)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.fulfilment.application.monolith.warehouses.adapters.database;
+&nbsp;
+&nbsp;import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
+&nbsp;import com.fulfilment.application.monolith.warehouses.domain.models.WarehouseSearchQuery;
+&nbsp;import com.fulfilment.application.monolith.warehouses.domain.models.WarehouseSearchPage;
+&nbsp;import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
+&nbsp;import io.quarkus.hibernate.orm.panache.PanacheRepository;
+&nbsp;import jakarta.enterprise.context.ApplicationScoped;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;@ApplicationScoped
+<b class="fc">&nbsp;public class WarehouseRepository implements WarehouseStore, PanacheRepository&lt;DbWarehouse&gt; {</b>
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public List&lt;Warehouse&gt; getAll() {
+<b class="fc">&nbsp;    return this.listAll().stream().map(DbWarehouse::toWarehouse).toList();</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public void create(Warehouse warehouse) {
+<b class="fc">&nbsp;    DbWarehouse dbWarehouse = new DbWarehouse();</b>
+<b class="fc">&nbsp;    dbWarehouse.businessUnitCode = warehouse.businessUnitCode;</b>
+<b class="fc">&nbsp;    dbWarehouse.location = warehouse.location;</b>
+<b class="fc">&nbsp;    dbWarehouse.capacity = warehouse.capacity;</b>
+<b class="fc">&nbsp;    dbWarehouse.stock = warehouse.stock;</b>
+<b class="fc">&nbsp;    dbWarehouse.createdAt = warehouse.createdAt;</b>
+<b class="fc">&nbsp;    dbWarehouse.archivedAt = warehouse.archivedAt;</b>
+&nbsp;    
+<b class="fc">&nbsp;    this.persist(dbWarehouse);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /*@Override
+&nbsp;  public void update(Warehouse warehouse) {
+&nbsp;    getEntityManager().createQuery(
+&nbsp;      &quot;UPDATE DbWarehouse w SET w.location = :loc, w.capacity = :cap, &quot; +
+&nbsp;      &quot;w.stock = :stock, w.archivedAt = :archived WHERE w.businessUnitCode = :code&quot;)
+&nbsp;      .setParameter(&quot;loc&quot;, warehouse.location)
+&nbsp;      .setParameter(&quot;cap&quot;, warehouse.capacity)
+&nbsp;      .setParameter(&quot;stock&quot;, warehouse.stock)
+&nbsp;      .setParameter(&quot;archived&quot;, warehouse.archivedAt)
+&nbsp;      .setParameter(&quot;code&quot;, warehouse.businessUnitCode)
+&nbsp;      .executeUpdate();
+&nbsp;
+&nbsp;    // Clear persistence context to see updates in subsequent queries
+&nbsp;    getEntityManager().flush();
+&nbsp;    getEntityManager().clear();
+&nbsp;  }*/
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public void update(Warehouse warehouse) {
+&nbsp;    // Step 1: Find the managed DbWarehouse entity — this brings it into
+&nbsp;    // the JPA persistence context WITH its current @Version value
+<b class="fc">&nbsp;    DbWarehouse dbWarehouse = find(&quot;businessUnitCode&quot;, warehouse.businessUnitCode)</b>
+<b class="fc">&nbsp;            .firstResult();</b>
+&nbsp;
+<b class="pc">&nbsp;    if (dbWarehouse == null) {</b>
+<b class="nc">&nbsp;      throw new IllegalArgumentException(</b>
+&nbsp;              &quot;Warehouse not found for update: &quot; + warehouse.businessUnitCode);
+&nbsp;    }
+&nbsp;
+&nbsp;    // Step 2: Map all fields from domain model onto the managed entity
+&nbsp;    // DO NOT map version — JPA manages it internally on DbWarehouse
+<b class="fc">&nbsp;    dbWarehouse.location   = warehouse.location;</b>
+<b class="fc">&nbsp;    dbWarehouse.capacity   = warehouse.capacity;</b>
+<b class="fc">&nbsp;    dbWarehouse.stock      = warehouse.stock;</b>
+<b class="fc">&nbsp;    dbWarehouse.archivedAt = warehouse.archivedAt;</b>
+&nbsp;
+&nbsp;    // Step 3: No explicit persist/merge needed — Panache/JPA dirty-checking
+&nbsp;    // detects the field changes and at TX commit generates:
+&nbsp;    // UPDATE warehouse SET stock=?, archived_at=?, ..., version=N+1
+&nbsp;    // WHERE id=? AND version=N
+&nbsp;    // If another TX already changed version → OptimisticLockException thrown
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public void remove(Warehouse warehouse) {
+&nbsp;    // TODO Auto-generated method stub
+<b class="nc">&nbsp;    throw new UnsupportedOperationException(&quot;Unimplemented method &#39;remove&#39;&quot;);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public Warehouse findByBusinessUnitCode(String buCode) {
+<b class="fc">&nbsp;    DbWarehouse dbWarehouse = find(&quot;businessUnitCode&quot;, buCode).firstResult();</b>
+<b class="fc">&nbsp;    return dbWarehouse != null ? dbWarehouse.toWarehouse() : null;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  // ── NEW: search API() ─────────────────────────────────────────────────────────
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public WarehouseSearchPage&lt;Warehouse&gt; search(WarehouseSearchQuery query) {
+&nbsp;
+&nbsp;    // Always exclude archived warehouses
+<b class="fc">&nbsp;    StringBuilder jpql = new StringBuilder(&quot;archivedAt IS NULL&quot;);</b>
+<b class="fc">&nbsp;    Map&lt;String, Object&gt; params = new HashMap&lt;&gt;();</b>
+&nbsp;
+<b class="pc">&nbsp;    if (query.getLocation() != null &amp;&amp; !query.getLocation().isBlank()) {</b>
+<b class="fc">&nbsp;      jpql.append(&quot; AND location = :location&quot;);</b>
+<b class="fc">&nbsp;      params.put(&quot;location&quot;, query.getLocation());</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    if (query.getMinCapacity() != null) {</b>
+<b class="fc">&nbsp;      jpql.append(&quot; AND capacity &gt;= :minCapacity&quot;);</b>
+<b class="fc">&nbsp;      params.put(&quot;minCapacity&quot;, query.getMinCapacity());</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    if (query.getMaxCapacity() != null) {</b>
+<b class="fc">&nbsp;      jpql.append(&quot; AND capacity &lt;= :maxCapacity&quot;);</b>
+<b class="fc">&nbsp;      params.put(&quot;maxCapacity&quot;, query.getMaxCapacity());</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    String orderClause = &quot; ORDER BY &quot; + query.getSortBy()</b>
+<b class="fc">&nbsp;            + &quot; &quot; + query.getSortOrder().toUpperCase();</b>
+&nbsp;
+&nbsp;    // Count total matching rows (without pagination)
+<b class="fc">&nbsp;    long totalElements = count(jpql.toString(), params);</b>
+&nbsp;
+&nbsp;    // Fetch the paginated slice, then map DbWarehouse → Warehouse
+<b class="fc">&nbsp;    List&lt;Warehouse&gt; data = find(jpql + orderClause, params)</b>
+<b class="fc">&nbsp;            .page(query.getPage(), query.getPageSize())</b>
+<b class="fc">&nbsp;            .list()</b>
+<b class="fc">&nbsp;            .stream()</b>
+<b class="fc">&nbsp;            .map(DbWarehouse::toWarehouse)</b>
+<b class="fc">&nbsp;            .toList();</b>
+&nbsp;
+<b class="fc">&nbsp;    return new WarehouseSearchPage&lt;&gt;(</b>
+&nbsp;            data,
+<b class="fc">&nbsp;            query.getPage(),</b>
+<b class="fc">&nbsp;            query.getPageSize(),</b>
+&nbsp;            totalElements
+&nbsp;    );
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-13 13:25</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > WarehouseResource</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.warehouse.api</a>
+</div>
+
+<h1>Coverage Summary for Class: WarehouseResource (com.warehouse.api)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">WarehouseResource$quarkusrestinvoker$archiveAWarehouseUnitByID_66a42843b3d14b92d256dce13239143dcb50ff65</td>
+  </tr>
+  <tr>
+    <td class="name">WarehouseResource$quarkusrestinvoker$createANewWarehouseUnit_b5c07de73c43d67555d142439680a7e2a6617b06</td>
+  </tr>
+  <tr>
+    <td class="name">WarehouseResource$quarkusrestinvoker$getAWarehouseUnitByID_a18037fb1420bb1b83555291afe1771653252546</td>
+  </tr>
+  <tr>
+    <td class="name">WarehouseResource$quarkusrestinvoker$listAllWarehousesUnits_79af7b3aa42f732b91479b26af91f17d8d5b0eb2</td>
+  </tr>
+  <tr>
+    <td class="name">WarehouseResource$quarkusrestinvoker$replaceTheCurrentActiveWarehouse_d6522954ac6664bbd9cb05aa0b7c1513b866c5a0</td>
+  </tr>
+  <tr>
+    <td class="name">WarehouseResource$quarkusrestinvoker$searchWarehouses_8a577fd00c05cdb66d1969519cda242aa372ab89</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.warehouse.api;
+&nbsp;
+&nbsp;import com.warehouse.api.beans.Warehouse;
+&nbsp;import com.warehouse.api.beans.WarehouseSearchResult;
+&nbsp;import jakarta.validation.constraints.DecimalMax;
+&nbsp;import jakarta.validation.constraints.DecimalMin;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.ws.rs.Consumes;
+&nbsp;import jakarta.ws.rs.DELETE;
+&nbsp;import jakarta.ws.rs.DefaultValue;
+&nbsp;import jakarta.ws.rs.GET;
+&nbsp;import jakarta.ws.rs.POST;
+&nbsp;import jakarta.ws.rs.Path;
+&nbsp;import jakarta.ws.rs.PathParam;
+&nbsp;import jakarta.ws.rs.Produces;
+&nbsp;import jakarta.ws.rs.QueryParam;
+&nbsp;import java.math.BigInteger;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * A JAX-RS interface. An implementation of this interface must be provided.
+&nbsp; */
+&nbsp;@Path(&quot;/warehouse&quot;)
+&nbsp;public interface WarehouseResource {
+&nbsp;  @GET
+&nbsp;  @Produces(&quot;application/json&quot;)
+&nbsp;  List&lt;Warehouse&gt; listAllWarehousesUnits();
+&nbsp;
+&nbsp;  @POST
+&nbsp;  @Produces(&quot;application/json&quot;)
+&nbsp;  @Consumes(&quot;application/json&quot;)
+&nbsp;  Warehouse createANewWarehouseUnit(@NotNull Warehouse data);
+&nbsp;
+&nbsp;  /**
+&nbsp;   * &lt;p&gt;
+&nbsp;   * Returns a paginated list of active (non-archived) warehouses. All parameters
+&nbsp;   * are optional and filters are combined with AND logic.
+&nbsp;   * &lt;/p&gt;
+&nbsp;   * 
+&nbsp;   */
+&nbsp;  @Path(&quot;/search&quot;)
+&nbsp;  @GET
+&nbsp;  @Produces(&quot;application/json&quot;)
+&nbsp;  WarehouseSearchResult searchWarehouses(@QueryParam(&quot;location&quot;) String location,
+&nbsp;      @QueryParam(&quot;minCapacity&quot;) @DecimalMin(value = &quot;0&quot;, inclusive = true) BigInteger minCapacity,
+&nbsp;      @QueryParam(&quot;maxCapacity&quot;) @DecimalMin(value = &quot;0&quot;, inclusive = true) BigInteger maxCapacity,
+&nbsp;      @QueryParam(&quot;sortBy&quot;) @DefaultValue(&quot;createdAt&quot;) String sortBy,
+&nbsp;      @QueryParam(&quot;sortOrder&quot;) @DefaultValue(&quot;asc&quot;) String sortOrder,
+&nbsp;      @QueryParam(&quot;page&quot;) @DecimalMin(value = &quot;0&quot;, inclusive = true) @DefaultValue(&quot;0&quot;) BigInteger page,
+&nbsp;      @QueryParam(&quot;pageSize&quot;) @DecimalMax(value = &quot;100&quot;, inclusive = true) @DecimalMin(value = &quot;1&quot;, inclusive = true) @DefaultValue(&quot;10&quot;) BigInteger pageSize);
+&nbsp;
+&nbsp;  @Path(&quot;/{id}&quot;)
+&nbsp;  @GET
+&nbsp;  @Produces(&quot;application/json&quot;)
+&nbsp;  Warehouse getAWarehouseUnitByID(@PathParam(&quot;id&quot;) String id);
+&nbsp;
+&nbsp;  @Path(&quot;/{id}&quot;)
+&nbsp;  @DELETE
+&nbsp;  void archiveAWarehouseUnitByID(@PathParam(&quot;id&quot;) String id);
+&nbsp;
+&nbsp;  /**
+&nbsp;   * &lt;p&gt;
+&nbsp;   * Replaces the current active Warehouse identified by
+&nbsp;   * &lt;code&gt;businessUnitCode&lt;/code&gt; unit by a new Warehouse provided in the request
+&nbsp;   * body. A Warehouse can be replaced by another Warehouse with the same Business
+&nbsp;   * Unit Code. That means that the previous Warehouse will be archived and the
+&nbsp;   * new Warehouse will be created assuming its place.
+&nbsp;   * &lt;/p&gt;
+&nbsp;   * 
+&nbsp;   */
+&nbsp;  @Path(&quot;/{businessUnitCode}/replacement&quot;)
+&nbsp;  @POST
+&nbsp;  @Produces(&quot;application/json&quot;)
+&nbsp;  @Consumes(&quot;application/json&quot;)
+&nbsp;  Warehouse replaceTheCurrentActiveWarehouse(@PathParam(&quot;businessUnitCode&quot;) String businessUnitCode,
+&nbsp;      @NotNull Warehouse data);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-13 13:25</div>
+</div>
+</body>
+</html>

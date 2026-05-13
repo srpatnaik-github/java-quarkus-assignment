@@ -1,0 +1,293 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ProductResource</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.fulfilment.application.monolith.products</a>
+</div>
+
+<h1>Coverage Summary for Class: ProductResource (com.fulfilment.application.monolith.products)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProductResource</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (27/27)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ProductResource$ErrorMapper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/11)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ProductResource$quarkusrestinvoker$create_0acc8ceb3daf6749ba14c9206572c0b0ff19b18b</td>
+  </tr>
+  <tr>
+    <td class="name">ProductResource$quarkusrestinvoker$delete_51d77e39c8d2bf28511a9aae7f6a80b42eb0edb7</td>
+  </tr>
+  <tr>
+    <td class="name">ProductResource$quarkusrestinvoker$get_103b2e3f06f1fbc71b32a3badc8ddbc518107fa3</td>
+  </tr>
+  <tr>
+    <td class="name">ProductResource$quarkusrestinvoker$getSingle_ec618cef32d929587a08c6e3a5954c18c727dc3f</td>
+  </tr>
+  <tr>
+    <td class="name">ProductResource$quarkusrestinvoker$update_8ec6f4eff76bf111b87626eb862cb146f9dec2cd</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.9%
+  </span>
+  <span class="absValue">
+    (13/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (38/38)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.fulfilment.application.monolith.products;
+&nbsp;
+&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+&nbsp;import com.fasterxml.jackson.databind.node.ObjectNode;
+&nbsp;import io.quarkus.panache.common.Sort;
+&nbsp;import jakarta.enterprise.context.ApplicationScoped;
+&nbsp;import jakarta.inject.Inject;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import jakarta.ws.rs.Consumes;
+&nbsp;import jakarta.ws.rs.DELETE;
+&nbsp;import jakarta.ws.rs.GET;
+&nbsp;import jakarta.ws.rs.POST;
+&nbsp;import jakarta.ws.rs.PUT;
+&nbsp;import jakarta.ws.rs.Path;
+&nbsp;import jakarta.ws.rs.Produces;
+&nbsp;import jakarta.ws.rs.WebApplicationException;
+&nbsp;import jakarta.ws.rs.core.Response;
+&nbsp;import jakarta.ws.rs.ext.ExceptionMapper;
+&nbsp;import jakarta.ws.rs.ext.Provider;
+&nbsp;import java.util.List;
+&nbsp;import org.jboss.logging.Logger;
+&nbsp;
+&nbsp;@Path(&quot;product&quot;)
+&nbsp;@ApplicationScoped
+&nbsp;@Produces(&quot;application/json&quot;)
+&nbsp;@Consumes(&quot;application/json&quot;)
+<b class="fc">&nbsp;public class ProductResource {</b>
+&nbsp;
+&nbsp;  @Inject ProductRepository productRepository;
+&nbsp;
+<b class="fc">&nbsp;  private static final Logger LOGGER = Logger.getLogger(ProductResource.class.getName());</b>
+&nbsp;
+&nbsp;  @GET
+&nbsp;  public List&lt;Product&gt; get() {
+<b class="fc">&nbsp;    return productRepository.listAll(Sort.by(&quot;name&quot;));</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @GET
+&nbsp;  @Path(&quot;{id}&quot;)
+&nbsp;  public Product getSingle(Long id) {
+<b class="fc">&nbsp;    Product entity = productRepository.findById(id);</b>
+<b class="fc">&nbsp;    if (entity == null) {</b>
+<b class="fc">&nbsp;      throw new WebApplicationException(&quot;Product with id of &quot; + id + &quot; does not exist.&quot;, 404);</b>
+&nbsp;    }
+<b class="fc">&nbsp;    return entity;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @POST
+&nbsp;  @Transactional
+&nbsp;  public Response create(Product product) {
+<b class="fc">&nbsp;    if (product.id != null) {</b>
+<b class="fc">&nbsp;      throw new WebApplicationException(&quot;Id was invalidly set on request.&quot;, 422);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    productRepository.persist(product);</b>
+<b class="fc">&nbsp;    return Response.ok(product).status(201).build();</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @PUT
+&nbsp;  @Path(&quot;{id}&quot;)
+&nbsp;  @Transactional
+&nbsp;  public Product update(Long id, Product product) {
+<b class="fc">&nbsp;    if (product.name == null) {</b>
+<b class="fc">&nbsp;      throw new WebApplicationException(&quot;Product Name was not set on request.&quot;, 422);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    Product entity = productRepository.findById(id);</b>
+&nbsp;
+<b class="fc">&nbsp;    if (entity == null) {</b>
+<b class="fc">&nbsp;      throw new WebApplicationException(&quot;Product with id of &quot; + id + &quot; does not exist.&quot;, 404);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    entity.name = product.name;</b>
+<b class="fc">&nbsp;    entity.description = product.description;</b>
+<b class="fc">&nbsp;    entity.price = product.price;</b>
+<b class="fc">&nbsp;    entity.stock = product.stock;</b>
+&nbsp;
+<b class="fc">&nbsp;    productRepository.persist(entity);</b>
+&nbsp;
+<b class="fc">&nbsp;    return entity;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @DELETE
+&nbsp;  @Path(&quot;{id}&quot;)
+&nbsp;  @Transactional
+&nbsp;  public Response delete(Long id) {
+<b class="fc">&nbsp;    Product entity = productRepository.findById(id);</b>
+<b class="fc">&nbsp;    if (entity == null) {</b>
+<b class="fc">&nbsp;      throw new WebApplicationException(&quot;Product with id of &quot; + id + &quot; does not exist.&quot;, 404);</b>
+&nbsp;    }
+<b class="fc">&nbsp;    productRepository.delete(entity);</b>
+<b class="fc">&nbsp;    return Response.status(204).build();</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Provider
+<b class="fc">&nbsp;  public static class ErrorMapper implements ExceptionMapper&lt;Exception&gt; {</b>
+&nbsp;
+&nbsp;    @Inject ObjectMapper objectMapper;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Response toResponse(Exception exception) {
+<b class="fc">&nbsp;      LOGGER.error(&quot;Failed to handle request&quot;, exception);</b>
+&nbsp;
+<b class="fc">&nbsp;      int code = 500;</b>
+<b class="fc">&nbsp;      if (exception instanceof WebApplicationException) {</b>
+<b class="fc">&nbsp;        code = ((WebApplicationException) exception).getResponse().getStatus();</b>
+&nbsp;      }
+&nbsp;
+<b class="fc">&nbsp;      ObjectNode exceptionJson = objectMapper.createObjectNode();</b>
+<b class="fc">&nbsp;      exceptionJson.put(&quot;exceptionType&quot;, exception.getClass().getName());</b>
+<b class="fc">&nbsp;      exceptionJson.put(&quot;code&quot;, code);</b>
+&nbsp;
+<b class="pc">&nbsp;      if (exception.getMessage() != null) {</b>
+<b class="fc">&nbsp;        exceptionJson.put(&quot;error&quot;, exception.getMessage());</b>
+&nbsp;      }
+&nbsp;
+<b class="fc">&nbsp;      return Response.status(code).entity(exceptionJson).build();</b>
+&nbsp;    }
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-05-13 13:25</div>
+</div>
+</body>
+</html>
