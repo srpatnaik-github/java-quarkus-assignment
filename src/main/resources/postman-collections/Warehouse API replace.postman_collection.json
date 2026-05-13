@@ -1,0 +1,136 @@
+{
+  "info": {
+    "_postman_id": "0b893df2-34db-4f10-9d9a-0d3859ce8d9e",
+    "name": "Warehouse API replace",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47493347",
+    "_collection_link": "https://go.postman.co/collection/47493347-0b893df2-34db-4f10-9d9a-0d3859ce8d9e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "List all the warehouse Copy",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/warehouse",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "warehouse"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Test 1 Warehouses",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"businessUnitCode\": \"REPLACE-001\",\r\n    \"location\": \"AMSTERDAM-001\",\r\n    \"capacity\": 80,\r\n    \"stock\": 40\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/warehouse",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "warehouse"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Test 2 Warehouses",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"businessUnitCode\": \"REPLACE-002\",\r\n    \"location\": \"AMSTERDAM-002\",\r\n    \"capacity\": 60,\r\n    \"stock\": 20\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/warehouse",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "warehouse"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Replace Warehouse",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"location\": \"ZWOLLE-001\",\r\n    \"capacity\": 30,\r\n    \"stock\": 20\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/warehouse/REPLACE-001/replacement",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "warehouse",
+            "REPLACE-001",
+            "replacement"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Archive warehouse",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/warehouse/REPLACE-002",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "warehouse",
+            "REPLACE-002"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

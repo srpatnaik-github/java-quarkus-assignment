@@ -1,0 +1,98 @@
+{
+  "info": {
+    "_postman_id": "5349c564-015e-46b8-99ea-57ad6660a956",
+    "name": "Warehouse API Archive",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47493347",
+    "_collection_link": "https://go.postman.co/collection/47493347-5349c564-015e-46b8-99ea-57ad6660a956?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "List all the warehouse",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/warehouse",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "warehouse"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create a new warehouse",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"businessUnitCode\": \"TEST-001\",\r\n    \"location\": \"AMSTERDAM-001\",\r\n    \"capacity\": 80,\r\n    \"stock\": 30\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/warehouse",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "warehouse"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get single warehouse by id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/warehouse/TEST-001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "warehouse",
+            "TEST-001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Archive the warehouse",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/warehouse/MWH.012",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "warehouse",
+            "MWH.012"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

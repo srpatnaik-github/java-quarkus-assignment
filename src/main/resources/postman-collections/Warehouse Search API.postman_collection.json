@@ -1,0 +1,706 @@
+{
+  "info": {
+    "_postman_id": "6f516544-f1e7-4740-818b-98a6ab071824",
+    "name": "Warehouse Search API",
+    "description": "Complete test collection for GET /warehouse/search endpoint covering all business use cases",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47493347",
+    "_collection_link": "https://go.postman.co/collection/47493347-6f516544-f1e7-4740-818b-98a6ab071824?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "UC-1: Get All Active Warehouses (No Filters)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('Has 3 active warehouses', () => pm.expect(json.data.length).to.eql(3));",
+              "pm.test('Page is 0', () => pm.expect(json.page).to.eql(0));",
+              "pm.test('PageSize is 10', () => pm.expect(json.pageSize).to.eql(10));",
+              "pm.test('TotalElements is 3', () => pm.expect(json.totalElements).to.eql(3));",
+              "pm.test('TotalPages is 1', () => pm.expect(json.totalPages).to.eql(1));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-2: Filter by Location (AMSTERDAM-001)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('Returns 1 warehouse', () => pm.expect(json.data.length).to.eql(1));",
+              "pm.test('businessUnitCode is MWH.012', () => pm.expect(json.data[0].businessUnitCode).to.eql('MWH.012'));",
+              "pm.test('TotalElements is 1', () => pm.expect(json.totalElements).to.eql(1));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?location=AMSTERDAM-001",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "location",
+              "value": "AMSTERDAM-001"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-3: Filter by Unknown Location (Empty Result)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('Returns empty data array', () => pm.expect(json.data.length).to.eql(0));",
+              "pm.test('TotalElements is 0', () => pm.expect(json.totalElements).to.eql(0));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?location=NOWHERE-999",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "location",
+              "value": "NOWHERE-999"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-4: Filter by Min Capacity (>=50)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('Returns 2 warehouses', () => pm.expect(json.data.length).to.eql(2));",
+              "pm.test('All capacities >= 50', () => json.data.forEach(w => pm.expect(w.capacity).to.be.at.least(50)));",
+              "pm.test('TotalElements is 2', () => pm.expect(json.totalElements).to.eql(2));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?minCapacity=50",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "minCapacity",
+              "value": "50"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-5: Filter by Max Capacity (<=50)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('Returns 2 warehouses', () => pm.expect(json.data.length).to.eql(2));",
+              "pm.test('All capacities <= 50', () => json.data.forEach(w => pm.expect(w.capacity).to.be.at.most(50)));",
+              "pm.test('TotalElements is 2', () => pm.expect(json.totalElements).to.eql(2));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?maxCapacity=50",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "maxCapacity",
+              "value": "50"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-6: Filter by Capacity Range (30-50)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('Returns 2 warehouses', () => pm.expect(json.data.length).to.eql(2));",
+              "pm.test('All capacities in range 30-50', () => json.data.forEach(w => {",
+              "    pm.expect(w.capacity).to.be.at.least(30);",
+              "    pm.expect(w.capacity).to.be.at.most(50);",
+              "}));",
+              "pm.test('TotalElements is 2', () => pm.expect(json.totalElements).to.eql(2));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?minCapacity=30&maxCapacity=50",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "minCapacity",
+              "value": "30"
+            },
+            {
+              "key": "maxCapacity",
+              "value": "50"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-7: Sort by Capacity Ascending",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('First item capacity is 30', () => pm.expect(json.data[0].capacity).to.eql(30));",
+              "pm.test('Second item capacity is 50', () => pm.expect(json.data[1].capacity).to.eql(50));",
+              "pm.test('Third item capacity is 100', () => pm.expect(json.data[2].capacity).to.eql(100));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?sortBy=capacity&sortOrder=asc",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "capacity"
+            },
+            {
+              "key": "sortOrder",
+              "value": "asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-8: Sort by Capacity Descending",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('First item capacity is 100', () => pm.expect(json.data[0].capacity).to.eql(100));",
+              "pm.test('Second item capacity is 50', () => pm.expect(json.data[1].capacity).to.eql(50));",
+              "pm.test('Third item capacity is 30', () => pm.expect(json.data[2].capacity).to.eql(30));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?sortBy=capacity&sortOrder=desc",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "capacity"
+            },
+            {
+              "key": "sortOrder",
+              "value": "desc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-9: Pagination - First Page (page=0, pageSize=2)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('Returns 2 items on first page', () => pm.expect(json.data.length).to.eql(2));",
+              "pm.test('Page is 0', () => pm.expect(json.page).to.eql(0));",
+              "pm.test('PageSize is 2', () => pm.expect(json.pageSize).to.eql(2));",
+              "pm.test('TotalElements is 3', () => pm.expect(json.totalElements).to.eql(3));",
+              "pm.test('TotalPages is 2', () => pm.expect(json.totalPages).to.eql(2));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?page=0&pageSize=2&sortBy=capacity&sortOrder=asc",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "pageSize",
+              "value": "2"
+            },
+            {
+              "key": "sortBy",
+              "value": "capacity"
+            },
+            {
+              "key": "sortOrder",
+              "value": "asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-10: Pagination - Second Page (page=1, pageSize=2)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('Returns 1 item on second page', () => pm.expect(json.data.length).to.eql(1));",
+              "pm.test('Page is 1', () => pm.expect(json.page).to.eql(1));",
+              "pm.test('TotalElements is 3', () => pm.expect(json.totalElements).to.eql(3));",
+              "pm.test('TotalPages is 2', () => pm.expect(json.totalPages).to.eql(2));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?page=1&pageSize=2&sortBy=capacity&sortOrder=asc",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "pageSize",
+              "value": "2"
+            },
+            {
+              "key": "sortBy",
+              "value": "capacity"
+            },
+            {
+              "key": "sortOrder",
+              "value": "asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-11: PageSize Capped at 100 (pageSize=999)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('PageSize is capped at 100', () => pm.expect(json.pageSize).to.eql(100));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?pageSize=999",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "pageSize",
+              "value": "999"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-12: Combined Filters - AND Logic",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('Returns 1 warehouse', () => pm.expect(json.data.length).to.eql(1));",
+              "pm.test('businessUnitCode is MWH.012', () => pm.expect(json.data[0].businessUnitCode).to.eql('MWH.012'));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?location=AMSTERDAM-001&minCapacity=40&sortBy=capacity&sortOrder=asc",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "location",
+              "value": "AMSTERDAM-001"
+            },
+            {
+              "key": "minCapacity",
+              "value": "40"
+            },
+            {
+              "key": "sortBy",
+              "value": "capacity"
+            },
+            {
+              "key": "sortOrder",
+              "value": "asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-13a: Archive MWH.001",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 204 - archived successfully', () => pm.response.to.have.status(204));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/MWH.001",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "MWH.001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-13b: Archived Warehouse Does Not Appear in Search",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('TotalElements is 2 (MWH.001 archived)', () => pm.expect(json.totalElements).to.eql(2));",
+              "const codes = json.data.map(w => w.businessUnitCode);",
+              "pm.test('MWH.001 not in results', () => pm.expect(codes).to.not.include('MWH.001'));",
+              "pm.test('MWH.012 still present', () => pm.expect(codes).to.include('MWH.012'));",
+              "pm.test('MWH.023 still present', () => pm.expect(codes).to.include('MWH.023'));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-14: Invalid sortBy Returns 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?sortBy=invalidField",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "invalidField"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-15: Invalid sortOrder Returns 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?sortOrder=random",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "sortOrder",
+              "value": "random"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UC-16: minCapacity > maxCapacity Returns 400",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/warehouse/search?minCapacity=100&maxCapacity=10",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "warehouse",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "minCapacity",
+              "value": "100"
+            },
+            {
+              "key": "maxCapacity",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}
