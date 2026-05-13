@@ -47,9 +47,6 @@ jobs:
       - name: Run Integration Tests
         run: ./mvnw verify -DskipITs=false
 
-      - name: Generate JaCoCo Coverage Report
-        run: ./mvnw test jacoco:report
-
       - name: Upload JaCoCo report
         if: always()
         uses: actions/upload-artifact@v4
