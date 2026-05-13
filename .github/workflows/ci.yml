@@ -35,8 +35,17 @@ jobs:
           java-version: 17
           cache: maven
 
-      - name: Build and test (with JaCoCo)
-        run: mvn clean verify -Ptest -B
+      - name: Build with Maven
+        run: ./mvnw clean package -DskipTests
+
+      - name: Run Tests
+        run: ./mvnw test
+
+      - name: Run Integration Tests
+        run: ./mvnw verify -DskipITs=false
+
+      - name: Generate JaCoCo Coverage Report
+        run: ./mvnw test jacoco:report
 
       - name: Upload JaCoCo report
         if: always()
