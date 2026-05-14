@@ -87,33 +87,33 @@ public class StoreResource {
     return entity;
   }
 
-  @PATCH
-  @Path("{id}")
-  @Transactional
-  public Store patch(Long id, Store updatedStore) {
-    if (updatedStore.name == null) {
-      throw new WebApplicationException("Store Name was not set on request.", 422);
-    }
+   @PATCH
+   @Path("{id}")
+   @Transactional
+   public Store patch(Long id, Store updatedStore) {
+     if (updatedStore.name == null) {
+       throw new WebApplicationException("Store Name was not set on request.", 422);
+     }
 
-    Store entity = Store.findById(id);
+     Store entity = Store.findById(id);
 
-    if (entity == null) {
-      throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
-    }
+     if (entity == null) {
+       throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
+     }
 
-    if (entity.name != null) {
-      entity.name = updatedStore.name;
-    }
+     if (entity.name != null) {
+       entity.name = updatedStore.name;
+     }
 
-    if (entity.quantityProductsInStock != 0) {
-      entity.quantityProductsInStock = updatedStore.quantityProductsInStock;
-    }
+     if (updatedStore.quantityProductsInStock != 0) {
+       entity.quantityProductsInStock = updatedStore.quantityProductsInStock;
+     }
 
-    // Fire synchronously inside the transaction
-    storeUpdatedEvent.fire(new StoreUpdatedEvent(entity));
+     // Fire synchronously inside the transaction
+     storeUpdatedEvent.fire(new StoreUpdatedEvent(entity));
 
-    return entity;
-  }
+     return entity;
+   }
 
   @DELETE
   @Path("{id}")

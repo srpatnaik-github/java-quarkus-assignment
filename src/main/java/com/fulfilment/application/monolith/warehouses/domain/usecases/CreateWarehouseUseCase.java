@@ -6,6 +6,7 @@ import com.fulfilment.application.monolith.warehouses.domain.ports.CreateWarehou
 import com.fulfilment.application.monolith.warehouses.domain.ports.LocationResolver;
 import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class CreateWarehouseUseCase implements CreateWarehouseOperation {
@@ -19,6 +20,7 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
   }
 
   @Override
+  @Transactional
   public void create(Warehouse warehouse) {
     // Validation 1: Business unit code must be unique
     Warehouse existing = warehouseStore.findByBusinessUnitCode(warehouse.businessUnitCode);

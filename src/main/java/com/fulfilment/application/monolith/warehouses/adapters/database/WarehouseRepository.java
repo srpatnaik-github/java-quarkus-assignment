@@ -32,23 +32,6 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
     this.persist(dbWarehouse);
   }
 
-  /*@Override
-  public void update(Warehouse warehouse) {
-    getEntityManager().createQuery(
-      "UPDATE DbWarehouse w SET w.location = :loc, w.capacity = :cap, " +
-      "w.stock = :stock, w.archivedAt = :archived WHERE w.businessUnitCode = :code")
-      .setParameter("loc", warehouse.location)
-      .setParameter("cap", warehouse.capacity)
-      .setParameter("stock", warehouse.stock)
-      .setParameter("archived", warehouse.archivedAt)
-      .setParameter("code", warehouse.businessUnitCode)
-      .executeUpdate();
-
-    // Clear persistence context to see updates in subsequent queries
-    getEntityManager().flush();
-    getEntityManager().clear();
-  }*/
-
   @Override
   public void update(Warehouse warehouse) {
     // Step 1: Find the managed DbWarehouse entity — this brings it into
@@ -77,8 +60,17 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
 
   @Override
   public void remove(Warehouse warehouse) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'remove'");
+    // Step 1: Find the DbWarehouse entity by businessUnitCode
+    DbWarehouse dbWarehouse = find("businessUnitCode", warehouse.businessUnitCode)
+            .firstResult();
+
+    if (dbWarehouse == null) {
+      throw new IllegalArgumentException(
+              "Warehouse not found for removal: " + warehouse.businessUnitCode);
+    }
+
+    // Step 2: Delete the entity from the database
+    delete(dbWarehouse);
   }
 
   @Override
